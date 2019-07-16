@@ -1,0 +1,38 @@
+version: '3.6'
+services:
+
+    mariadb2:
+        image: mariadb
+        container_name: mariadb-02
+        volumes:
+            - ./db_data:/var/lib/mysql
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=supersecret
+            - MYSQL_DATABASE=db2
+            - MYSQL_USER=db2user
+            - MYSQL_PASSWORD=secret
+
+    wordpress2:
+        image: wordpress
+        container_name: wordpress-02
+        volumes:
+            - ./wp_data:/var/www/html
+            - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        depends_on:
+            - mariadb2
+        restart: always
+        environment:
+            - WORDPRESS_DB_HOST=mariadb2:3306
+            - WORDPRESS_DB_NAME=db2
+            - WORDPRESS_DB_USER=db2user
+            - WORDPRESS_DB_PASSWORD=secret
+            - WORDPRESS_TABLE_PREFIX=wp_
+            - VIRTUAL_HOST=site2.com
+            - LETSENCRYPT_HOST=site2.com
+            - LETSENCRYPT_EMAIL=admin2@email.com
+
+networks:
+  default:
+    external:
+      name: dockernet

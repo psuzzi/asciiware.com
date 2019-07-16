@@ -1,0 +1,1 @@
+setup the system using docker run commands
